@@ -64,9 +64,9 @@ const displayError = () => {
     const errorBox = document.querySelector(".error-box");
 
     errorBox.style.top = "50%";
-    errorBox.textContent = message;
+    errorBox.textContent = "Please enter a valid IP Address.";
     setTimeout(() => {
-        errorBox.textContent = "Please enter a valid IP Address.";
+        errorBox.textContent = "";
         errorBox.style.top = "-100%";
     }, 3000);
 
