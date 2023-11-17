@@ -24,7 +24,7 @@ const initiateSearch = (ipAddress) => {
     if (ipAddress.trim() !== "") {
         fetchData(ipAddress);
     } else {
-        displayError("Please enter a valid IP Address.");
+        displayError();
     }
 };
 
@@ -38,7 +38,7 @@ const fetchData = async (ipAddress) => {
         initializeMap(location["lat"], location["lng"], location["city"]);
     } catch (error) {
         console.error("Error while fetching data!");
-        displayError("Oops! Something went wrong. Please try again.");
+        displayError();
     }
 };
 
@@ -60,13 +60,13 @@ const initializeMap = (latitude, longitude, city) => {
     document.querySelector(".leaflet-control-attribution").remove();
 };
 
-const displayError = (message) => {
+const displayError = () => {
     const errorBox = document.querySelector(".error-box");
 
     errorBox.style.top = "50%";
     errorBox.textContent = message;
     setTimeout(() => {
-        errorBox.textContent = "";
+        errorBox.textContent = "Please enter a valid IP Address.";
         errorBox.style.top = "-100%";
     }, 3000);
 
