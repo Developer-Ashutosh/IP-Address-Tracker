@@ -99,6 +99,7 @@ h1 {
 .result {
     position: relative;
     padding: .8rem 1.8rem;
+    text-align: center;
 }
 
 .result:first-child::before {
