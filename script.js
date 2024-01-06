@@ -8,6 +8,7 @@ const errorBox = document.querySelector(".error-box");
 // Function to search client's IP on page load
 const searchClientIP = async () => {
     try {
+        loader.style.display = 'inline-block';
         const response = await fetch('https://api.ipify.org?format=json');
         const data = await response.json();
         fetchData(data.ip);
@@ -23,11 +24,13 @@ const searchIPAddress = () => {
 
     document.addEventListener("keypress", (event) => {
         if (event.key === "Enter") {
+            loader.style.display = "inline-block";
             fetchData(searchBox.value);
         }
     });
 
     searchBtn.addEventListener("click", () => {
+        loader.style.display = "inline-block";
         fetchData(searchBox.value);
     });
 };
@@ -35,12 +38,13 @@ const searchIPAddress = () => {
 // Function to fetch data based on IP address
 const fetchData = async (ipAddress) => {
     try {
-        const response = await fetch(`https://geo.ipify.org/api/v2/country,city?apiKey=at_z6BIkgf6uQRzUhvLIWsSm9p8TRnPt&ipAddress=${ipAddress}`);
+        const response = await fetch(`http://ip-api.com/json/${ipAddress}`);
         const data = await response.json();
-        const { ip, location, isp } = data;
+        const { query, lat, lon, city, regionName, countryCode, timezone, isp } = data;
+        loader.style.display = 'none';
 
-        updateData(ip, location, isp);
-        initializeMap(location["lat"], location["lng"], location["city"]);
+        updateData(query, city, regionName, countryCode, timezone, isp);
+        initializeMap(lat, lon, city);
     } catch (error) {
         displayError("Failed to fetch data. Please check the entered IP address and try again.");
         ipAddressBox.textContent = locationBox.textContent = timezoneBox.textContent = ispBox.textContent = "N/A";
@@ -49,10 +53,9 @@ const fetchData = async (ipAddress) => {
 };
 
 // Function to update UI with fetched data
-const updateData = (ipValue, locationValue, ispValue) => {
-    const { region, city, postalCode, timezone } = locationValue;
+const updateData = (ipValue, city, regionName, countryCode, timezone, ispValue) => {
     ipAddressBox.textContent = ipValue || "N/A";
-    locationBox.textContent = region ? region + (city ? `, ${city}` + (postalCode ? `, ${postalCode}.` : '.') : '.') : 'N/A';
+    locationBox.textContent = regionName ? regionName + (city ? `, ${city}` + (countryCode ? `, ${countryCode}.` : '.') : '.') : 'N/A';
     timezoneBox.textContent = timezone || "N/A";
     ispBox.textContent = ispValue || "N/A";
 };
@@ -77,6 +80,7 @@ const displayError = (message) => {
         errorBox.innerHTML = "";
         errorBox.style.top = "-100%";
     }, 3000);
+    loader.style.display = 'none';
 };
 
 // Calling the initial functions
